@@ -15,7 +15,9 @@ readme = open("README.rst").read()
 history = open("CHANGES.rst").read()
 
 tests_require = [
+    "invenio-app>=1.3.0,<2.0.0",
     "pytest-invenio>=1.4.0",
+    "typecheck-decorator>=1.3",
 ]
 
 # Should follow inveniosoftware/invenio versions
@@ -45,14 +47,13 @@ setup_requires = [
 ]
 
 install_requires = [
-    "docopt>=0.6.2",
     "Flask-BabelEx>=0.9.4",
     "invenio-access>=1.4.2",
     "invenio-accounts>=1.4.3",
     "invenio-config>=1.0.3",
     "invenio-celery>=1.2.2",
     "invenio-db>=1.0.8",
-    "invenio-records-marc21>=0.2.0",
+    "invenio-records-marc21>=0.2.1",
     "lxml>=4.6.2",
     "faker>=5.0.2",
 ]
@@ -97,16 +98,6 @@ setup(
             "invenio_rdm_pure = invenio_rdm_pure.config",
         ],
         "invenio_celery.tasks": ["invenio_rdm_pure = invenio_rdm_pure.tasks"],
-        # TODO: Edit these entry points to fit your needs.
-        # 'invenio_access.actions': [],
-        # 'invenio_admin.actions': [],
-        # 'invenio_assets.bundles': [],
-        # 'invenio_base.api_apps': [],
-        # 'invenio_base.api_blueprints': [],
-        # 'invenio_base.blueprints': [],
-        # 'invenio_db.models': [],
-        # 'invenio_pidstore.minters': [],
-        # 'invenio_records.jsonresolver': [],
     },
     extras_require=extras_require,
     install_requires=install_requires,

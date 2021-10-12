@@ -7,12 +7,7 @@
 
 """Invenio module that adds pure."""
 
-from os.path import abspath, dirname, isfile, join
-
 from flask import Blueprint
-from flask_babelex import gettext as _
-
-from .pure.import_records import create_pure_import_file
 
 blueprint = Blueprint(
     "invenio_rdm_pure",
@@ -22,12 +17,9 @@ blueprint = Blueprint(
 )
 
 
-@blueprint.route("/pure_import_xml")
-def pure_import():
+@blueprint.route("/export/<target_system>")
+def export(target_system):
     """Render pure_import_xml view."""
-    # Check if the XML file does not exist
-    pure_import_file = join(dirname(abspath(__file__)), "data", pure_import.xml)
-    if not isfile(pure_import_file):
-        # Run pure_import task to create the XML file
-        create_pure_import_file(pure_import_file)
-    return open(pure_import_file, "r").read()
+    if target_system == "pure":
+        pure_import_file = join(dirname(abspath(__file__)), "data", "TODO path to file")
+        return open(pure_import_file, "r").read()
