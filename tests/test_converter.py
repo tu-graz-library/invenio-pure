@@ -9,7 +9,7 @@
 import json
 from os.path import dirname, join
 
-from invenio_rdm_pure.converter import Converter, Marc21Record
+from invenio_rdm_pure.converter import Marc21Record, Pure2Marc21
 
 
 def load_json(filename):
@@ -20,8 +20,10 @@ def load_json(filename):
 
 def test_conversion():
     """Test conversion of a Pure record with all attributes."""
-    converter = Converter()
-    marc21_xml = converter.convert_pure_json_to_marc21_xml(
-        load_json(join("data", "pure_record_fake.json"))
-    )
+    converter = Pure2Marc21()
+    pure_json = load_json(join("data", "pure_record_fake.json"))
+    record = Marc21Record()
+    converter.convert(pure_json, record)
+    marc21_xml = record.to_xml_string()
+
     assert Marc21Record.is_valid_marc21_xml_string(marc21_xml)
