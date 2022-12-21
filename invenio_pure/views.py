@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2021 Technische Universität Graz.
 #
-# invenio-rdm-pure is free software; you can redistribute it and/or modify it
+# invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Invenio module that adds pure."""
@@ -10,7 +10,7 @@
 from flask import Blueprint
 
 blueprint = Blueprint(
-    "invenio_rdm_pure",
+    "invenio_pure",
     __name__,
     template_folder="templates",
     static_folder="static",

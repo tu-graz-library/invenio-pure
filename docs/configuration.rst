@@ -1,7 +1,7 @@
 ..
     Copyright (C) 2020 Technische Universität Graz.
 
-    invenio-rdm-pure is free software; you can redistribute it and/or
+    invenio-pure is free software; you can redistribute it and/or
     modify it under the terms of the MIT License; see LICENSE file for more
     details.
 
@@ -9,5 +9,5 @@
 Configuration
 =============
 
-.. automodule:: invenio_rdm_pure.config
+.. automodule:: invenio_pure.config
    :members:

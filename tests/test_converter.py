@@ -2,14 +2,14 @@
 #
 # Copyright (C) 2021 Graz University of Technology.
 #
-# invenio-records-lom is free software; you can redistribute it and/or modify it
+# invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Converter tests."""
 import json
 from os.path import dirname, join
 
-from invenio_rdm_pure.converter import Marc21Record, Pure2Marc21
+from invenio_pure.converter import Marc21Record, Pure2Marc21
 
 
 def load_json(filename):
