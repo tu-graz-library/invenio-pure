@@ -2,12 +2,13 @@
 #
 # Copyright (C) 2021 Technische Universität Graz.
 #
-# invenio-rdm-pure is free software; you can redistribute it and/or modify it
+# invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Invenio module that adds pure."""
 
-from .ext import InvenioRdmPure
-from .version import __version__
+from .ext import InvenioPure
 
-__all__ = ("__version__", "InvenioRdmPure")
+__version__ = "0.1.0"
+
+__all__ = ("__version__", "InvenioPure")

@@ -2,14 +2,13 @@
 #
 # Copyright (C) 2021 Technische Universität Graz
 #
-# invenio-rdm-pure is free software; you can redistribute it and/or modify it
+# invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Converter Module to facilitate conversion of metadata."""
 import json
 import os
 
-import typecheck as tc
 from invenio_records_marc21.services import Marc21Metadata
 
 

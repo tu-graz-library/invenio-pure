@@ -1,15 +1,24 @@
 #!/usr/bin/env sh
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020 Technische Universität Graz
+# Copyright (C) 2020-2022 Technische Universität Graz
 #
-# invenio-rdm-pure is free software; you can redistribute it and/or modify it
+# invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-python -m check_manifest --ignore ".*-requirements.txt"
+# Quit on errors
+set -o errexit
+
+# Quit on unbound symbols
+set -o nounset
+
+# Always bring down docker services
+function cleanup() {
+    eval "$(docker-services-cli down --env)"
+}
+trap cleanup EXIT
+
+python -m check_manifest
 python -m sphinx.cmd.build -qnNW docs docs/_build/html
-docker-services-cli --verbose up es postgresql redis
+# eval "$(docker-services-cli up --db ${DB:-postgresql} --env)"
 python -m pytest
-tests_exit_code=$?
-docker-services-cli down
-exit "$tests_exit_code"
