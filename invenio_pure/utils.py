@@ -1,167 +1,84 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Technische Universität Graz
+# Copyright (C) 2021-2022 Technische Universität Graz
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Utility methods."""
 
-import functools
-import json
-import smtplib
-from datetime import datetime
-from os.path import dirname, isabs, isfile, join
-from typing import List
+from json import loads
+from shutil import copyfileobj
+from typing import Dict, List
 
-import click
-from flask import current_app
-from flask.cli import with_appcontext
+from requests import get
+from requests.auth import HTTPBasicAuth
 
-# from flask_security.utils import hash_password
-
-# from invenio_db import db
+from .types import URL, FilePath, PureID
 
 
-class JSON(click.ParamType):
-    """JSON provides the ability to load a json from a string or a file."""
-
-    name = "JSON"
-
-    def convert(self, value, param, ctx):
-        """This method converts the json-str or json-file to the dictionary representation."""
-        if isfile(value):
-            value = load_file_as_string(value)
-
-        try:
-            return json.loads(value)
-        except json.JSONDecodeError:
-            click.secho("ERROR - Invalid JSON provided.", fg="red")
+def headers(pure_api_key: str) -> Dict[str, str]:
+    headers = {
+        "api-key": pure_api_key,
+        "accept": "application/json",
+    }
+    return headers
 
 
-def get_user_id(user_email: str, user_password: str):
-    """Get the userId of the user.
+def get_research_output_count(pure_api_key: str, pure_api_url: str) -> int:
+    """Get the amount of available research outputs at /research-outputs endpoint.
 
-    In case the user doesn't exist yet,
-    create it with given credentials.
-
-    if the user does not exist it should be created with:
-
-
-       user = datastore.create_user(
-           email=user_email,
-           password=hash_password(user_password),
-           active=True,
-       )
-       db.session.commit()
-
+    Return -1 on failure.
     """
-    datastore = current_app.extensions["security"].datastore
-    user_id = ""  # not knowing the type, so it is "", maybe its a int
-    if datastore is not None:
-        user = datastore.get_user(user_email)
-        if user:
-            user_id = user.id
+    url = f"{pure_api_url}/research-outputs"
+    response = get(url, headers=headers(pure_api_key))
 
-    return user_id
+    if response.status_code != 200:
+        return -1
 
-
-def make_user_admin(self, id_or_email: str) -> None:
-    """Gives the user with given id or email administrator rights."""
-    return None  # FIXME: Method stub'd until auxiliary methods are implemented.
-    datastore = current_app.extensions["security"].datastore
-    if datastore is not None:
-        invenio_pure_user = datastore.get_user(
-            id_or_email
-        )  # FIXME: Not implemented yet.
-        admin_role = datastore.find_role("admin")  # FIXME: Not implemented yet.
-        datastore.add_role_to_user(invenio_pure_user, admin_role)
+    return int(loads(response.text)["count"])
 
 
-def load_file_as_string(path):
-    """Open a file and return the content as UTF-8 encoded string."""
-    if not isabs(path):
-        path = join(dirname(__file__), path)
+def get_research_outputs(
+    pure_api_key: str, pure_api_url: str, size: int, offset: int
+) -> List[dict]:
+    """Get a list of research outputs.
 
-    if not isfile(path):
-        return ""
+    Pure API identifies a series by the following parameters:
+    The *size* parameter defines the length of the series.
+    The *offset* parameter defines the offset of the series.
+    Return [] if the GET request is not OK.
+    """
+    url = f"{pure_api_url}/research-outputs?size={size}&offset={offset}"
+    response = get(url, headers=headers(pure_api_key))
 
-    with open(path, "rb") as fp:
-        input = fp.read()
-        return input.decode("utf-8")
-
-
-def get_dates_in_span(
-    start: datetime.date, stop: datetime.date, step: int
-) -> List[datetime.date]:
-    """Returns an ascending list of dates with given step between the two endpoints of the span."""
-    dates = []
-    if start == stop:
-        return [start]
-    elif step == 0:
+    if response.status_code != 200:
         return []
-    elif step < 0:
-        if start < stop:
-            return []
-        else:
-            while start >= stop:
-                dates.append(start)
-                start += datetime.timedelta(step)
-            dates.reverse()
-    elif step > 0:
-        if stop < start:
-            return []
-        else:
-            while start <= stop:
-                dates.append(start)
-                start += datetime.timedelta(step)
-    return dates
+
+    response_json = loads(response.text)
+    items = response_json["items"]
+    return items
 
 
-def send_email(
-    uuid: str,
-    file_name: str,
-    email_sender: str,
-    email_sender_password: str,
-    email_receiver: str,
-):
-    """Send an email."""
-    email_smtp_server = "smtp.gmail.com"
-    email_smtp_port = 587
-    email_subject = "Delete Pure File"
-    email_message = (
-        """Subject: """
-        + email_subject
-        + """Please remove from pure uuid {} the file {}."""
-    )
-    # create SMTP session
-    session = smtplib.SMTP(email_smtp_server, email_smtp_port)
-
-    # start TLS for security
-    session.starttls()
-
-    # Authentication
-    session.login(email_sender, email_sender_password)
-
-    # sending the mail
-    message = email_message.format(uuid, file_name)
-    session.sendmail(email_sender, email_receiver, message)
-
-    # terminating the session
-    session.quit()
+def store_file_temporarily(file_url: URL, file_path: FilePath, auth: HTTPBasicAuth):
+    """Download file."""
+    with get(file_url, stream=True) as response:
+        with open(file_path, "wb") as fp:
+            copyfileobj(response.raw, fp)
 
 
-@with_appcontext
-def pure_user_id(func):
-    """Decorator to give the pure_user_id to a function/method."""
-    pure_user_email = current_app.config.get("PURE_USER_EMAIL")
-    pure_user_password = current_app.config.get("PURE_USER_PASSWORD")
+def download_pure_file(
+    pure_id: PureID,
+    file_url: URL,
+    pure_username: str,
+    pure_password: str,
+) -> str:
+    """Download a file from Pure to given destination path with given file name.
 
-    pure_user_id = get_user_id(pure_user_email, pure_user_password)
+    Return path to the downloaded file upon success, empty string upon failure.
+    """
+    file_path = f"/tmp/{pure_id}.pdf"
+    auth = HTTPBasicAuth(pure_username, pure_password)
+    store_file_temporarily(file_url, file_path, auth)
 
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        kwargs["pure_user_id"] = pure_user_id
-        return func(*args, **kwargs)
-
-    return wrapper
+    return file_path
