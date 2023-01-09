@@ -6,8 +6,8 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Types of the pure connector."""
-
 from dataclasses import dataclass
+from typing import List
 
 PureID = str
 """This describes the main id used in pure.
@@ -61,5 +61,5 @@ class PureConfigs:
     username: PureUsername
     password: PurePassword
     user_email: EmailAddress
-    recipients: list[EmailAddress]
+    recipients: List[EmailAddress]
     sender: EmailAddress

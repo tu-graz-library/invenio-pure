@@ -18,11 +18,11 @@ from .types import URL, FilePath, PureID
 
 
 def headers(pure_api_key: str) -> Dict[str, str]:
-    headers = {
+    """Headers."""
+    return {
         "api-key": pure_api_key,
         "accept": "application/json",
     }
-    return headers
 
 
 def get_research_output_count(pure_api_key: str, pure_api_url: str) -> int:
@@ -31,7 +31,7 @@ def get_research_output_count(pure_api_key: str, pure_api_url: str) -> int:
     Return -1 on failure.
     """
     url = f"{pure_api_url}/research-outputs"
-    response = get(url, headers=headers(pure_api_key))
+    response = get(url, headers=headers(pure_api_key), timeout=10)
 
     if response.status_code != 200:
         return -1
@@ -50,7 +50,7 @@ def get_research_outputs(
     Return [] if the GET request is not OK.
     """
     url = f"{pure_api_url}/research-outputs?size={size}&offset={offset}"
-    response = get(url, headers=headers(pure_api_key))
+    response = get(url, headers=headers(pure_api_key), timeout=10)
 
     if response.status_code != 200:
         return []
@@ -62,12 +62,12 @@ def get_research_outputs(
 
 def store_file_temporarily(file_url: URL, file_path: FilePath, auth: HTTPBasicAuth):
     """Download file."""
-    with get(file_url, stream=True) as response:
-        with open(file_path, "wb") as fp:
-            copyfileobj(response.raw, fp)
+    with get(file_url, stream=True, auth=auth, timeout=10) as response:
+        with open(file_path, "wb") as file_pointer:
+            copyfileobj(response.raw, file_pointer)
 
 
-def download_pure_file(
+def download_file(
     pure_id: PureID,
     file_url: URL,
     pure_username: str,

@@ -27,6 +27,8 @@ Following is a example configuration. One option to add this to the
 global celery beat schedule is to update the CELERY_BEAT_SCHEDULE
 dict in invenio.cfg by the example below:
 
+.. code-block:: python
+
     "synchronize_records": {
         "task": "invenio_pure.tasks.import_records_from_pure",
         "schedule": crontab(hour=1, minute=0, day_of_week=0),

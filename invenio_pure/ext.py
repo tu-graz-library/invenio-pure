@@ -8,7 +8,7 @@
 """Invenio module that adds pure."""
 
 
-class InvenioPure(object):
+class InvenioPure:
     """invenio-pure extension."""
 
     def __init__(self, app=None):

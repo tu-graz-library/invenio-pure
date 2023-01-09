@@ -21,8 +21,8 @@ def load_file_as_string(path):
     if not isfile(path):
         return ""
 
-    with open(path, "rb") as fp:
-        content = fp.read()
+    with open(path, "rb") as file_pointer:
+        content = file_pointer.read()
         return content.decode("utf-8")
 
 
