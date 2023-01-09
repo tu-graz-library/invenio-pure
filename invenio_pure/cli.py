@@ -30,12 +30,16 @@ def pure():
 @option("--pure_username", type=STRING)
 @option("--pure_password", type=STRING)
 @option("--user-email", type=STRING)
-@option("--pure-record", type=JSON)
+@option("--pure-record", type=JSON())
 def import_records_from_pure(
     endpoint, token, pure_username, pure_password, user_email, pure_record
 ):
     """Import a record from given JSON file or JSON string."""
     import_func = current_app.config["PURE_IMPORT_FUNC"]
-    configs = PureConfigs(endpoint, token, pure_username, pure_password, user_email)
+    recipients = current_app.config["PURE_ERROR_MAIL_RECIPIENTS"]
+    sender = current_app.config["PURE_ERROR_MAIL_SENDER"]
+    configs = PureConfigs(
+        endpoint, token, pure_username, pure_password, user_email, recipients, sender
+    )
     record = import_from_pure(import_func, pure_record, configs)
     print(f"record.id: {record.id}")

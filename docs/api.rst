@@ -11,9 +11,3 @@ API Docs
 
 .. automodule:: invenio_pure.ext
    :members:
-
-Views
------
-
-.. automodule:: invenio_pure.views
-   :members:

@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2020 Technische Universität Graz.
+# Copyright (C) 2020-2022 Technische Universität Graz.
 #
-# invenio-rdm-pure is free software; you can redistribute it and/or modify it
+# invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Sphinx configuration."""
 
-import os
-
-import sphinx.environment
-
 from invenio_pure import __version__
 
 # -- General configuration ------------------------------------------------
+
+nitpick_ignore = [("py:class", "invenio_pure.types.PureConfigs")]
 
 # If your documentation needs a minimal Sphinx version, state it here.
 # needs_sphinx = '1.0'
@@ -47,8 +45,8 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = "invenio-rdm-pure"
-copyright = "2020, Technische Universität Graz"
+project = "invenio-pure"
+copyright = "2022, Technische Universität Graz"
 author = "Technische Universität Graz"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -111,13 +109,13 @@ html_theme = "alabaster"
 html_theme_options = {
     "description": "Invenio module that adds pure",
     "github_user": "inveniosoftware",
-    "github_repo": "invenio-rdm-pure",
+    "github_repo": "invenio-pure",
     "github_button": False,
     "github_banner": True,
     "show_powered_by": False,
     "extra_nav_links": {
-        "invenio-rdm-pure@GitHub": "https://github.com/fair-data-austria/invenio-rdm-pure",
-        "invenio-rdm-pure@PyPI": "https://pypi.python.org/pypi/invenio-rdm-pure/",
+        "invenio-pure@GitHub": "https://github.com/tu-graz-library/invenio-pure",
+        "invenio-pure@PyPI": "https://pypi.python.org/pypi/invenio-pure/",
     },
 }
 
@@ -222,7 +220,7 @@ html_sidebars = {
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "invenio-rdm-pure_namedoc"
+htmlhelp_basename = "invenio-pure_namedoc"
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -243,8 +241,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "invenio-rdm-pure.tex",
-        "invenio-rdm-pure Documentation",
+        "invenio-pure.tex",
+        "invenio-pure Documentation",
         "Technische Universität Graz",
         "manual",
     ),
@@ -275,9 +273,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, "invenio-rdm-pure", "invenio-rdm-pure Documentation", [author], 1)
-]
+man_pages = [(master_doc, "invenio-pure", "invenio-pure Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -291,10 +287,10 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "invenio-rdm-pure",
-        "invenio-rdm-pure Documentation",
+        "invenio-pure",
+        "invenio-pure Documentation",
         author,
-        "invenio-rdm-pure",
+        "invenio-pure",
         "Invenio module that adds pure",
         "Miscellaneous",
     ),
