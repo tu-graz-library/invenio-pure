@@ -7,7 +7,7 @@
 
 """Scheduled tasks for celery."""
 
-from typing import Callable, Tuple
+from typing import Callable
 
 from celery import shared_task
 from flask import current_app
@@ -17,7 +17,7 @@ from .api import import_from_pure, pure_records
 from .types import PureConfigs
 
 
-def config_variables() -> Tuple[Callable, Callable, PureConfigs]:
+def config_variables() -> tuple[Callable, Callable, PureConfigs]:
     """Configuration variables."""
     import_func = current_app.config["PURE_IMPORT_FUNC"]
     sieve_func = current_app.config["PURE_SIEVE_FUNC"]
