@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version v0.1.0 (release 2023-01-11)
+
+
+
+
 Version 0.1.0 (released TBD)
 
 - Initial public release.
