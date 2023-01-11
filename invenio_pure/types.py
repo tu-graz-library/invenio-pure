@@ -7,7 +7,6 @@
 
 """Types of the pure connector."""
 from dataclasses import dataclass
-from typing import List
 
 PureID = str
 """This describes the main id used in pure.
@@ -61,5 +60,5 @@ class PureConfigs:
     username: PureUsername
     password: PurePassword
     user_email: EmailAddress
-    recipients: List[EmailAddress]
+    recipients: list[EmailAddress]
     sender: EmailAddress

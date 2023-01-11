@@ -9,7 +9,6 @@
 
 from json import loads
 from shutil import copyfileobj
-from typing import Dict, List
 
 from requests import get
 from requests.auth import HTTPBasicAuth
@@ -17,7 +16,7 @@ from requests.auth import HTTPBasicAuth
 from .types import URL, FilePath, PureID
 
 
-def headers(pure_api_key: str) -> Dict[str, str]:
+def headers(pure_api_key: str) -> dict[str, str]:
     """Headers."""
     return {
         "api-key": pure_api_key,
@@ -41,7 +40,7 @@ def get_research_output_count(pure_api_key: str, pure_api_url: str) -> int:
 
 def get_research_outputs(
     pure_api_key: str, pure_api_url: str, size: int, offset: int
-) -> List[dict]:
+) -> list[dict]:
     """Get a list of research outputs.
 
     Pure API identifies a series by the following parameters:
