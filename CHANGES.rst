@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version v0.1.1 (release 2023-01-11)
+
+- setup: remove translation config
+
+
 Version v0.1.0 (release 2023-01-11)
 
 
