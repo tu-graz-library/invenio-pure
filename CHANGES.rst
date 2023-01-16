@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version v0.1.2 (release 2023-01-16)
+
+- fix: missing exports
+
+
 Version v0.1.1 (release 2023-01-11)
 
 - setup: remove translation config
