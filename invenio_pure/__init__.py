@@ -7,8 +7,19 @@
 
 """Invenio module that adds pure."""
 
+from .errors import PureAPIError, PureRuntimeError
 from .ext import InvenioPure
+from .types import URL, PureConfigs, PureID, PureRecord
 
 __version__ = "0.1.1"
 
-__all__ = ("__version__", "InvenioPure")
+__all__ = (
+    "__version__",
+    "InvenioPure",
+    "PureConfigs",
+    "PureRecord",
+    "PureID",
+    "PureAPIError",
+    "PureRuntimeError",
+    "URL",
+)
