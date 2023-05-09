@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2022 Technische Universität Graz
+# Copyright (C) 2021-2023 Technische Universität Graz
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Utility methods."""
-
+from http import HTTPStatus
 from json import loads
+from pathlib import Path
 from shutil import copyfileobj
 
 from requests import get
@@ -32,14 +33,17 @@ def get_research_output_count(pure_api_key: str, pure_api_url: str) -> int:
     url = f"{pure_api_url}/research-outputs"
     response = get(url, headers=headers(pure_api_key), timeout=10)
 
-    if response.status_code != 200:
+    if response.status_code != HTTPStatus.OK:
         return -1
 
     return int(loads(response.text)["count"])
 
 
 def get_research_outputs(
-    pure_api_key: str, pure_api_url: str, size: int, offset: int
+    pure_api_key: str,
+    pure_api_url: str,
+    size: int,
+    offset: int,
 ) -> list[dict]:
     """Get a list of research outputs.
 
@@ -51,18 +55,21 @@ def get_research_outputs(
     url = f"{pure_api_url}/research-outputs?size={size}&offset={offset}"
     response = get(url, headers=headers(pure_api_key), timeout=10)
 
-    if response.status_code != 200:
+    if response.status_code != HTTPStatus.OK:
         return []
 
     response_json = loads(response.text)
-    items = response_json["items"]
-    return items
+    return response_json["items"]
 
 
-def store_file_temporarily(file_url: URL, file_path: FilePath, auth: HTTPBasicAuth):
+def store_file_temporarily(
+    file_url: URL,
+    file_path: FilePath,
+    auth: HTTPBasicAuth,
+) -> None:
     """Download file."""
     with get(file_url, stream=True, auth=auth, timeout=10) as response:
-        with open(file_path, "wb") as file_pointer:
+        with Path(file_path).open(mode="wb") as file_pointer:
             copyfileobj(response.raw, file_pointer)
 
 
@@ -76,7 +83,7 @@ def download_file(
 
     Return path to the downloaded file upon success, empty string upon failure.
     """
-    file_path = f"/tmp/{pure_id}.pdf"
+    file_path = f"/tmp/{pure_id}.pdf"  # noqa: S108
     auth = HTTPBasicAuth(pure_username, pure_password)
     store_file_temporarily(file_url, file_path, auth)
 

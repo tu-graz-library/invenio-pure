@@ -6,7 +6,7 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Invenio module that adds pure."""
-from typing import Callable
+from collections.abc import Callable
 
 from .types import (
     URL,

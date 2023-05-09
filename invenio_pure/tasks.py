@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2022 Technische Universität Graz
+# Copyright (C) 2021-2023 Technische Universität Graz
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Scheduled tasks for celery."""
 
-from typing import Callable
+from collections.abc import Callable
 
 from celery import shared_task
 from flask import current_app
@@ -18,7 +18,7 @@ from .types import PureConfigs
 
 
 def config_variables() -> tuple[Callable, Callable, PureConfigs]:
-    """Configuration variables."""
+    """Collect variables."""
     import_func = current_app.config["PURE_IMPORT_FUNC"]
     sieve_func = current_app.config["PURE_SIEVE_FUNC"]
     endpoint = current_app.config["PURE_PURE_ENDPOINT"]
@@ -30,14 +30,20 @@ def config_variables() -> tuple[Callable, Callable, PureConfigs]:
     sender = current_app.config["PURE_ERROR_MAIL_SENDER"]
 
     pure_configs = PureConfigs(
-        endpoint, token, pure_username, pure_password, user_email, recipients, sender
+        endpoint,
+        token,
+        pure_username,
+        pure_password,
+        user_email,
+        recipients,
+        sender,
     )
 
     return import_func, sieve_func, pure_configs
 
 
 @shared_task(ignore_result=True)
-def import_records_from_pure():
+def import_records_from_pure() -> None:
     """Import records from pure."""
     import_func, sieve_func, configs = config_variables()
 
