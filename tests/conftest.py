@@ -12,6 +12,8 @@ fixtures are available.
 """
 
 
+from collections.abc import Callable
+
 import pytest
 from flask import Flask
 
@@ -19,10 +21,10 @@ from invenio_pure import InvenioPure
 
 
 @pytest.fixture(scope="module")
-def create_app(instance_path):
+def create_app(instance_path: str) -> Callable:
     """Application factory fixture."""
 
-    def factory(**config):
+    def factory(**config: dict) -> Flask:
         app = Flask("testapp", instance_path=instance_path)
         app.config.update(**config)
         InvenioPure(app)
