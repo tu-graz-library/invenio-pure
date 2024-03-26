@@ -1,4 +1,0 @@
-select = ["ALL"]
-ignore = ["ANN101", "ANN102", "D203", "D211", "D212", "D213", "UP009", "PLR0913", "SIM117", "INP001", "S101"]
-
-exclude = ["docs"]
