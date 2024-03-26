@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Technische Universität Graz.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -9,15 +9,13 @@
 
 from .errors import PureAPIError, PureRuntimeError
 from .ext import InvenioPure
-from .types import URL, PureConfigs, PureID, PureRecord
+from .types import URL, PureID
 
 __version__ = "0.1.2"
 
 __all__ = (
     "__version__",
     "InvenioPure",
-    "PureConfigs",
-    "PureRecord",
     "PureID",
     "PureAPIError",
     "PureRuntimeError",

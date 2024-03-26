@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2020-2022 Technische Universität Graz.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -28,6 +29,11 @@ extensions = [
     "sphinx.ext.doctest",
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
+]
+
+# add nitpick ignore
+nitpick_ignore = [
+    ("py:class", "flask.app.Flask"),
 ]
 
 # Add any paths that contain templates here, relative to this directory.

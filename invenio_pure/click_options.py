@@ -8,20 +8,21 @@
 """Click options."""
 
 from json import JSONDecodeError, loads
-from os.path import dirname, isabs, isfile, join
+from pathlib import Path
+from typing import Any
 
 from click import ParamType, secho
 
 
-def load_file_as_string(path):
+def load_file_as_string(path: str) -> str:
     """Open a file and return the content as UTF-8 encoded string."""
-    if not isabs(path):
-        path = join(dirname(__file__), path)
+    if not Path(path).is_absolute(path):
+        path = Path(__file__).parent / path
 
-    if not isfile(path):
+    if not Path(path).is_file():
         return ""
 
-    with open(path, "rb") as file_pointer:
+    with Path(path).open(mode="rb") as file_pointer:
         content = file_pointer.read()
         return content.decode("utf-8")
 
@@ -31,9 +32,14 @@ class JSON(ParamType):
 
     name = "JSON"
 
-    def convert(self, value, param, ctx):
-        """This method converts the json-str or json-file to the dictionary representation."""
-        if isfile(value):
+    def convert(
+        self,
+        value: Any,  # noqa: ANN401
+        param: Any,  # noqa: ANN401, ARG002
+        ctx: Any,  # noqa: ANN401, ARG002
+    ) -> str:
+        """Convert the json-str or json-file to the dictionary representation."""
+        if Path(value).is_file():
             value = load_file_as_string(value)
 
         try:

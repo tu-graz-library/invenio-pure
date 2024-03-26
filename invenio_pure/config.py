@@ -1,24 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2022 Technische Universität Graz.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Invenio module that adds pure."""
-from typing import Callable
 
-from .types import (
-    URL,
-    EmailAddress,
-    FilePath,
-    PureConfigs,
-    PureID,
-    PurePassword,
-    PureRecord,
-    PureToken,
-    PureUsername,
-)
+
+from .types import URL, EmailAddress, PurePassword, PureToken, PureUsername
 
 PURE_CELERY_BEAT_SCHEDULE = {}
 """The celery beat schedule is used to configure the import schedule.
@@ -35,27 +25,6 @@ dict in invenio.cfg by the example below:
     }
 """
 
-PURE_IMPORT_FUNC: Callable[
-    [
-        PureRecord,
-        PureConfigs,
-        Callable[[PureID, URL, PureUsername, PurePassword], FilePath],
-    ],
-    None,
-] = None
-"""This function is called to import the pure record into the repository.
-
-It needs as an parameter the pure record as a json, the pure configuration
-and a callable which is provided from this package to download the file
-from pure."""
-
-PURE_SIEVE_FUNC: Callable[[PureRecord], bool] = None
-"""This function implements the import criteria.
-
-The import criteria handles the conditions which have to be true
-as that the record will be imported into the repository.
-"""
-
 PURE_PURE_ENDPOINT: URL = ""
 """This is the endpoint of the pure instance."""
 
@@ -70,9 +39,3 @@ PURE_PURE_PASSWORD: PurePassword = ""
 
 PURE_USER_EMAIL: EmailAddress = ""
 """This is the user email of the pure user within the InvenioRDM instance."""
-
-PURE_ERROR_MAIL_RECIPIENTS: list[EmailAddress] = []
-"""The list of recipients to send emails if errors happen in the import process."""
-
-PURE_ERROR_MAIL_SENDER: EmailAddress = ""
-"""The sender of the error emails."""

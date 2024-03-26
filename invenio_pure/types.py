@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022 Graz University of Technology.
+# Copyright (C) 2022-2024 Graz University of Technology.
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Types of the pure connector."""
-from dataclasses import dataclass
+
 
 PureID = str
 """This describes the main id used in pure.
@@ -50,15 +50,8 @@ PurePassword = str
 It will not have special schema. It is the password which will be created in PURE.
 """
 
+PureAPIKey = str
+"""Pure api token."""
 
-@dataclass
-class PureConfigs:
-    """Configs for PURE."""
-
-    endpoint: URL
-    token: PureToken
-    username: PureUsername
-    password: PurePassword
-    user_email: EmailAddress
-    recipients: list[EmailAddress]
-    sender: EmailAddress
+Filter = dict[str, list[str]]
+"""The filter describes which records will be imported into the repository."""
