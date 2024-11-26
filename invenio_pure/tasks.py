@@ -28,5 +28,5 @@ def import_records_from_pure() -> None:
         try:
             import_func(system_identity, pure_id, pure_service)
         except RuntimeError as e:
-            msg = "ERROR pure pure_id: %s couldn't be imported because of %s"
+            msg = "ERROR pure pure_id: %s with message: %s"
             current_app.logger.error(msg, pure_id, str(e))

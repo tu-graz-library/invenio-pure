@@ -48,3 +48,34 @@ def import_records_from_pure(
 
     color = "green" if not no_color else "black"
     secho(f"record.id: {record.id}", fg=color)
+
+
+@pure.command("sync")
+@with_appcontext
+@option("--endpoint", type=URL, required=True)
+@option("--token", type=STRING, required=True)
+@option("--username", type=STRING, required=True)
+@option("--password", type=STRING, required=True)
+@option("--user-email", type=STRING, required=True)
+@option("--no-color", is_flag=True, default=False)
+@build_service
+def sync(
+    pure_service: PureRESTService,
+    user_email: str,
+    *,
+    no_color: bool,
+):
+    """Sync Pure with the repo."""
+    import_func = current_app.config["PURE_IMPORT_FUNC"]
+    filter_records = current_app.config["PURE_FILTER_RECORDS"]
+    user = current_accounts.datastore.get_user_by_email(user_email)
+    identity = get_identity(user)
+
+    ids = pure_service.fetch_all_ids(identity, filter_records)
+
+    for pure_id in ids:
+        try:
+            import_func(identity, pure_id, pure_service)
+        except RuntimeError as e:
+            msg = "ERROR pure pure_id: %s with message: %s"
+            current_app.logger.error(msg, pure_id, str(e))
