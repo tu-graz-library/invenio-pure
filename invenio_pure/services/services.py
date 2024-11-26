@@ -37,9 +37,9 @@ class PureRESTService:
         """Get metadata by pure uuid."""
         return self.api.get_metadata(pure_id)
 
-    def download_file(self, _: Identity, pure_id: PureID, file_url: URL) -> str:
+    def download_file(self, _: Identity, file_: dict) -> str:
         """Download File."""
-        return self.api.download_file(file_url)
+        return self.api.download_file(file_)
 
     def mark_as_exported(self, _: Identity, pure_id: PureID, record: dict) -> bool:
         """Mark as exported."""

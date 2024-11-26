@@ -10,7 +10,7 @@
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
-from ..types import URL, Filter, PureID
+from ..types import Filter, PureID
 from .config import PureRESTConfig
 from .models import PureConnection
 
@@ -26,16 +26,16 @@ class PureAPI:
 
     def fetch_all_ids(self, filter_records: Filter) -> list[str]:
         """Get records."""
-        records = self.connection.post_ids(filter_records)
-        return [record.uuid for record in records]
+        records = self.connection.ids(filter_records)
+        return [record["uuid"] for record in records["items"]]
 
     def get_metadata(self, pure_id: PureID) -> dict:
         """Get metadata."""
-        return self.connection.post_metadata(pure_id)
+        return self.connection.metadata(pure_id)
 
-    def download_file(self, file_url: URL) -> str:
+    def download_file(self, file_: dict) -> str:
         """Download file."""
-        filename = self.connection.get_filename(file_url)
+        filename = file_["fileName"]
         prefix = Path(filename).stem
         suffix = Path(filename).suffix
 
@@ -45,7 +45,7 @@ class PureAPI:
             prefix=f"{prefix}-",
             suffix=suffix,
         ) as file_pointer:
-            self.connection.store_file_temporarily(file_url, file_pointer)
+            self.connection.store_file_temporarily(file_["url"], file_pointer)
         return file_pointer.name
 
     def mark_as_exported(self, pure_id: PureID, record: dict) -> bool:
@@ -57,4 +57,4 @@ class PureAPI:
         record["keywordUris"] = [
             "dk/atira/pure/researchoutput/keywords/export2repo/exported",
         ]
-        return self.connection.post_mark_as_exported(pure_id, record)
+        return self.connection.mark_as_exported(pure_id, record)

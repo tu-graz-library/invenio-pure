@@ -12,7 +12,7 @@ from shutil import copyfileobj
 from tempfile import _TemporaryFileWrapper
 from typing import cast
 
-from requests import ReadTimeout, get, head, post
+from requests import ReadTimeout, get, post, put
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import JSONDecodeError
 
@@ -52,15 +52,43 @@ class PureConnection:
         self.config = config
         self.post_json = PureRESTPOSTJson(self.config.token)
 
+    def get(self, endpoint: str, headers: dict[str, str]) -> dict:
+        """Get."""
+        try:
+            response = get(endpoint, headers=headers, timeout=10)
+        except (ReadTimeout, JSONDecodeError) as exc:
+            raise PureRESTError(code=550, msg=str(exc)) from exc
+
+        if str(response.status_code) != "200":
+            raise PureRESTError(code=response.status_code, msg=str(response.text))
+
+        return cast(dict, response.json())
+
+    def put(self, endpoint: str, data: dict, headers: dict[str, str]) -> dict:
+        """Put."""
+        try:
+            response = put(endpoint, json=data, headers=headers, timeout=10)
+        except (ReadTimeout, JSONDecodeError) as exc:
+            raise PureRESTError(code=550, msg=str(exc)) from exc
+
+        if str(response.status_code) != "200":
+            raise PureRESTError(code=response.status_code, msg=str(response.text))
+
+        return cast(dict, response.json())
+
     def post(self, endpoint: str, data: dict, headers: dict[str, str]) -> dict:
         """Post."""
         try:
-            response = post(endpoint, data=data, headers=headers, timeout=10)
+            response = post(endpoint, json=data, headers=headers, timeout=10)
         except (ReadTimeout, JSONDecodeError) as exc:
             raise PureRESTError(code=550, msg=str(exc)) from exc
-        return cast(dict, response.json)
 
-    def post_ids(self, filter_records: Filter) -> dict:
+        if str(response.status_code) != "200":
+            raise PureRESTError(code=response.status_code, msg=str(response.text))
+
+        return cast(dict, response.json())
+
+    def ids(self, filter_records: Filter) -> dict:
         """Post ids."""
         endpoint = f"{self.config.endpoint}/search"
         body = filter_records
@@ -68,22 +96,12 @@ class PureConnection:
 
         return self.post(endpoint, body, headers)
 
-    def post_metadata(self, pure_id: PureID) -> dict:
+    def metadata(self, pure_id: PureID) -> dict:
         """Post metadata."""
         endpoint = f"{self.config.endpoint}/{pure_id}"
-        body: dict = {}
         headers = self.post_json.create_request_headers()
 
-        return self.post(endpoint, body, headers)
-
-    def get_filename(self, file_url: URL) -> str:
-        """Get filename."""
-        headers = head(file_url, timeout=10).headers
-        try:
-            return headers["Content-Disposition"].split("filename=")[-1].strip('"')
-        except KeyError as error:
-            msg = f"ERROR moodle no filename found for url: {file_url}"
-            raise RuntimeError(msg) from error
+        return self.get(endpoint, headers)
 
     def store_file_temporarily(
         self,
@@ -99,11 +117,11 @@ class PureConnection:
         with get(file_url, stream=True, auth=auth, timeout=10) as response:
             copyfileobj(response.raw, file_pointer)
 
-    def post_mark_as_exported(self, pure_id: PureID, record: dict) -> bool:
+    def mark_as_exported(self, pure_id: PureID, record: dict) -> bool:
         """Post mark as exported."""
         endpoint = f"{self.config.endpoint}/{pure_id}"
         body = record
         headers = self.post_json.create_request_headers()
         # TODO check return value, json may contain error message and return False then
-        self.post(endpoint, body, headers)
+        self.put(endpoint, body, headers)
         return True
