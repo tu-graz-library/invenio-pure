@@ -27,8 +27,6 @@ def pure() -> None:
 @with_appcontext
 @option("--endpoint", type=URL, required=True)
 @option("--token", type=STRING, required=True)
-@option("--username", type=STRING, required=True)
-@option("--password", type=STRING, required=True)
 @option("--user-email", type=STRING, required=True)
 @option("--pure-id", type=STRING, required=True)
 @option("--no-color", is_flag=True, default=False)
@@ -74,17 +72,9 @@ def list_all_available_records(pure_service: PureRESTService, user_email: str) -
 @with_appcontext
 @option("--endpoint", type=URL, required=True)
 @option("--token", type=STRING, required=True)
-@option("--username", type=STRING, required=True)
-@option("--password", type=STRING, required=True)
 @option("--user-email", type=STRING, required=True)
-@option("--no-color", is_flag=True, default=False)
 @build_service
-def sync(
-    pure_service: PureRESTService,
-    user_email: str,
-    *,
-    no_color: bool,
-):
+def sync(pure_service: PureRESTService, user_email: str) -> None:
     """Sync Pure with the repo."""
     import_func = current_app.config["PURE_IMPORT_FUNC"]
     filter_records = current_app.config["PURE_FILTER_RECORDS"]

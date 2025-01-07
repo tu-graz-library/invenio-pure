@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2024 Graz University of Technology.
+# Copyright (C) 2021-2025 Graz University of Technology.
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -8,7 +8,7 @@
 """Invenio module that adds pure."""
 
 
-from .types import URL, EmailAddress, PurePassword, PureToken, PureUsername
+from .types import URL, EmailAddress, PureToken
 
 PURE_CELERY_BEAT_SCHEDULE: dict[str, dict] = {}
 """The celery beat schedule is used to configure the import schedule.
@@ -30,12 +30,6 @@ PURE_PURE_ENDPOINT: URL = ""
 
 PURE_PURE_TOKEN: PureToken = ""
 """This is the token to be allowed to use the API."""
-
-PURE_PURE_USERNAME: PureUsername = ""
-"""This is the pure username which is necessary to download files."""
-
-PURE_PURE_PASSWORD: PurePassword = ""
-"""This is the pure password which is necessary to download files."""
 
 PURE_USER_EMAIL: EmailAddress = ""
 """This is the user email of the pure user within the InvenioRDM instance."""

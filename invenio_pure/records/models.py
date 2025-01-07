@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2024-2025 Graz University of Technology.
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -13,7 +13,6 @@ from tempfile import _TemporaryFileWrapper
 from typing import cast
 
 from requests import ReadTimeout, get, post, put
-from requests.auth import HTTPBasicAuth
 from requests.exceptions import JSONDecodeError
 
 from ..types import URL, Filter, PureAPIKey, PureID
@@ -112,9 +111,8 @@ class PureConnection:
 
         Return path to the downloaded file upon success, empty string upon failure.
         """
-        auth = HTTPBasicAuth(self.config.username, self.config.password)
-
-        with get(file_url, stream=True, auth=auth, timeout=10) as response:
+        headers = {"api-key": self.config.token}
+        with get(file_url, stream=True, headers=headers, timeout=10) as response:
             copyfileobj(response.raw, file_pointer)
 
     def mark_as_exported(self, pure_id: PureID, record: dict) -> bool:
