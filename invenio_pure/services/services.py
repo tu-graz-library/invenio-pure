@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2024-2025 Graz University of Technology.
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Services."""
 
-from pathlib import Path
 
 from flask_principal import Identity
 
 from ..records import PureAPI
-from ..types import URL, Filter, PureID
+from ..types import Filter, PureID
 from .config import PureRESTServiceConfig
 
 

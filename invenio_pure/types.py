@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2022-2024 Graz University of Technology.
+# Copyright (C) 2022-2025 Graz University of Technology.
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -36,18 +36,6 @@ EmailAddress = str
 """The email address.
 
 The address does not have to have a special format, but it has to be an email.
-"""
-
-PureUsername = str
-"""The pure username which will be used to download files.
-
-It will not have special schema. It is the name which will be created in PURE.
-"""
-
-PurePassword = str
-"""The pure password which will be used to download files.
-
-It will not have special schema. It is the password which will be created in PURE.
 """
 
 PureAPIKey = str
