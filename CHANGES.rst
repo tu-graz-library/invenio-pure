@@ -8,6 +8,17 @@
 Changes
 =======
 
+Version v1.0.0 (release 2025-01-07)
+
+- setup: update ruff configuration
+- global: remove username and password usage
+- cli: improve output
+- cli: add command list
+- cli: add command sync
+- global: refactore to service approach
+- setup: migrate to ruff
+
+
 Version v0.1.2 (release 2023-01-16)
 
 - fix: missing exports
