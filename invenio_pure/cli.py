@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2024 Graz University of Technology.
+# Copyright (C) 2021-2025 Graz University of Technology.
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -48,6 +48,21 @@ def import_records_from_pure(
 
     color = "green" if not no_color else "black"
     secho(f"record.id: {record.id}", fg=color)
+
+@pure.command("list")
+@with_appcontext
+@option("--endpoint", type=URL, required=True)
+@option("--token", type=STRING, required=True)
+@option("--user-email", type=STRING, required=True)
+@build_service
+def list_all_available_records(pure_service: PureRESTService, user_email: str) -> None:
+    """List all possible to import records."""
+    filter_records = current_app.config["PURE_FILTER_RECORDS"]
+    user = current_accounts.datastore.get_user_by_email(user_email)
+    identity = get_identity(user)
+
+    for pure_id in pure_service.fetch_all_ids(identity, filter_records):
+        secho(f"pure_id: {pure_id}", fg="green")
 
 
 @pure.command("sync")
