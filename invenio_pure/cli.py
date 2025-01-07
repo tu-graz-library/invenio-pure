@@ -44,10 +44,15 @@ def import_records_from_pure(
     import_func = current_app.config["PURE_IMPORT_FUNC"]
     user = current_accounts.datastore.get_user_by_email(user_email)
     identity = get_identity(user)
-    record = import_func(identity, pure_id, pure_service)
+    try:
+        record = import_func(identity, pure_id, pure_service)
+        color = "green" if not no_color else "black"
+        secho(f"record.id: {record.id}", fg=color)
+    except RuntimeError as e:
+        msg = f"ERROR pure pure_id: {pure_id} with message: {e!r}"
+        color = "red" if not no_color else "black"
+        secho(msg, fg=color)
 
-    color = "green" if not no_color else "black"
-    secho(f"record.id: {record.id}", fg=color)
 
 @pure.command("list")
 @with_appcontext
@@ -91,6 +96,8 @@ def sync(
     for pure_id in ids:
         try:
             import_func(identity, pure_id, pure_service)
+            msg = f"SUCCESS pure pure_id: {pure_id} imported successfully."
+            secho(msg, fg="green")
         except RuntimeError as e:
-            msg = "ERROR pure pure_id: %s with message: %s"
-            current_app.logger.error(msg, pure_id, str(e))
+            msg = f"ERROR pure pure_id: {pure_id} with message: {e!r}"
+            secho(msg, fg="red")
