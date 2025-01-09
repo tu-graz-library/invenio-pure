@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version v1.1.0 (release 2025-01-09)
+
+- fix: permission
+
+
 Version v1.0.0 (release 2025-01-07)
 
 - setup: update ruff configuration
