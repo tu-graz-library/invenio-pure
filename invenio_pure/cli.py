@@ -8,14 +8,46 @@
 """CLI commands for Invenio-RDM-Pure."""
 
 
+from collections.abc import Callable
+from functools import wraps
+from typing import TypedDict, Unpack
+
 from click import STRING, group, option, secho
 from click_params import URL
 from flask import current_app
 from flask.cli import with_appcontext
+from flask_principal import Identity
+from invenio_access import any_user
 from invenio_access.utils import get_identity
 from invenio_accounts import current_accounts
 
 from .services import PureRESTService, build_service
+
+
+class KwargsDict(TypedDict, total=False):
+    """Kwargs dict."""
+
+    pure_service: PureRESTService
+    user_email: str
+    pure_id: str
+    no_color: bool
+    identity: Identity
+
+
+def build_identity[T](func: Callable[..., T]) -> Callable:
+    """Decorate to build the user."""
+
+    @wraps(func)
+    def build(*_: dict, **kwargs: Unpack[KwargsDict]) -> T:
+        user = current_accounts.datastore.get_user_by_email(kwargs["user_email"])
+        identity = get_identity(user)
+        identity.provides.add(any_user)
+        kwargs["identity"] = identity
+        del kwargs["user_email"]
+
+        return func(**kwargs)
+
+    return build
 
 
 @group()
@@ -31,17 +63,17 @@ def pure() -> None:
 @option("--pure-id", type=STRING, required=True)
 @option("--no-color", is_flag=True, default=False)
 @build_service
+@build_identity
 def import_records_from_pure(
     pure_service: PureRESTService,
-    user_email: str,
+    identity: Identity,
     pure_id: str,
     *,
     no_color: bool,
 ) -> None:
     """Import a record from given JSON file or JSON string."""
     import_func = current_app.config["PURE_IMPORT_FUNC"]
-    user = current_accounts.datastore.get_user_by_email(user_email)
-    identity = get_identity(user)
+
     try:
         record = import_func(identity, pure_id, pure_service)
         color = "green" if not no_color else "black"
@@ -58,11 +90,13 @@ def import_records_from_pure(
 @option("--token", type=STRING, required=True)
 @option("--user-email", type=STRING, required=True)
 @build_service
-def list_all_available_records(pure_service: PureRESTService, user_email: str) -> None:
+@build_identity
+def list_all_available_records(
+    pure_service: PureRESTService,
+    identity: Identity,
+) -> None:
     """List all possible to import records."""
     filter_records = current_app.config["PURE_FILTER_RECORDS"]
-    user = current_accounts.datastore.get_user_by_email(user_email)
-    identity = get_identity(user)
 
     for pure_id in pure_service.fetch_all_ids(identity, filter_records):
         secho(f"pure_id: {pure_id}", fg="green")
@@ -74,12 +108,11 @@ def list_all_available_records(pure_service: PureRESTService, user_email: str) -
 @option("--token", type=STRING, required=True)
 @option("--user-email", type=STRING, required=True)
 @build_service
-def sync(pure_service: PureRESTService, user_email: str) -> None:
+@build_identity
+def sync(pure_service: PureRESTService, identity: Identity) -> None:
     """Sync Pure with the repo."""
     import_func = current_app.config["PURE_IMPORT_FUNC"]
     filter_records = current_app.config["PURE_FILTER_RECORDS"]
-    user = current_accounts.datastore.get_user_by_email(user_email)
-    identity = get_identity(user)
 
     ids = pure_service.fetch_all_ids(identity, filter_records)
 
