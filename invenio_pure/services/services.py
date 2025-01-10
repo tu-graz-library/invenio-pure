@@ -36,6 +36,10 @@ class PureRESTService:
         """Get metadata by pure uuid."""
         return self.api.get_metadata(pure_id)
 
+    def get_publisher_name(self, _: Identity, pure_id: PureID) -> str:
+        """Get publisher information."""
+        return self.api.get_publisher_name(pure_id)
+
     def download_file(self, _: Identity, file_: dict) -> str:
         """Download File."""
         return self.api.download_file(file_)

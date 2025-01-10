@@ -89,7 +89,7 @@ class PureConnection:
 
     def ids(self, filter_records: Filter) -> dict:
         """Post ids."""
-        endpoint = f"{self.config.endpoint}/search"
+        endpoint = f"{self.config.endpoint}/research-outputs/search"
         body = filter_records
         headers = self.post_json.create_request_headers()
 
@@ -97,7 +97,21 @@ class PureConnection:
 
     def metadata(self, pure_id: PureID) -> dict:
         """Post metadata."""
-        endpoint = f"{self.config.endpoint}/{pure_id}"
+        endpoint = f"{self.config.endpoint}/research-outputs/{pure_id}"
+        headers = self.post_json.create_request_headers()
+
+        return self.get(endpoint, headers)
+
+    def journal(self, journal_id: PureID) -> dict:
+        """Get Journal."""
+        endpoint = f"{self.config.endpoint}/journals/{journal_id}"
+        headers = self.post_json.create_request_headers()
+
+        return self.get(endpoint, headers)
+
+    def publisher(self, publisher_id: PureID) -> dict:
+        """Get Publisher."""
+        endpoint = f"{self.config.endpoint}/publishers/{publisher_id}"
         headers = self.post_json.create_request_headers()
 
         return self.get(endpoint, headers)
@@ -117,7 +131,7 @@ class PureConnection:
 
     def mark_as_exported(self, pure_id: PureID, record: dict) -> bool:
         """Post mark as exported."""
-        endpoint = f"{self.config.endpoint}/{pure_id}"
+        endpoint = f"{self.config.endpoint}/research-outputs/{pure_id}"
         body = record
         headers = self.post_json.create_request_headers()
         # TODO check return value, json may contain error message and return False then
