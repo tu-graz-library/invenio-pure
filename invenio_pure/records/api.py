@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2024-2025 Graz University of Technology.
 #
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -32,6 +32,42 @@ class PureAPI:
     def get_metadata(self, pure_id: PureID) -> dict:
         """Get metadata."""
         return self.connection.metadata(pure_id)
+
+    def get_journal(self, journal_id: PureID) -> dict:
+        """Get journal metadata."""
+        return self.connection.journal(journal_id)
+
+    def get_publisher(self, publisher_id: PureID) -> dict:
+        """Get publisher metadata."""
+        return self.connection.publisher(publisher_id)
+
+    def get_publisher_name(self, pure_id: PureID) -> str:
+        """Get publisher name."""
+        metadata = self.get_metadata(pure_id)
+
+        try:
+            journal_id = metadata["journalAssociation"]["journal"]["uuid"]
+        except KeyError as error:
+            msg = f"For pure_id: {pure_id} no journal was found."
+            raise RuntimeError(msg) from error
+
+        journal = self.get_journal(journal_id)
+
+        try:
+            publisher_id = journal["publisher"]["uuid"]
+        except KeyError as error:
+            msg = f"For pure_id: {pure_id} no publisher was found."
+            raise RuntimeError(msg) from error
+
+        publisher = self.get_publisher(publisher_id)
+
+        try:
+            name = publisher["name"]
+        except KeyError as error:
+            msg = f"For pure_id: {pure_id} no publisher name was found."
+            raise RuntimeError(msg) from error
+
+        return name
 
     def download_file(self, file_: dict) -> str:
         """Download file."""
