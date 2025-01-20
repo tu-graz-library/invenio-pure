@@ -91,6 +91,8 @@ class PureConnection:
         """Post ids."""
         endpoint = f"{self.config.endpoint}/research-outputs/search"
         body = filter_records
+        body["size"] = 1000  # to get all records
+        body["offset"] = 0
         headers = self.post_json.create_request_headers()
 
         return self.post(endpoint, body, headers)
