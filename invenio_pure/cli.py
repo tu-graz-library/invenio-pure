@@ -79,6 +79,9 @@ def import_records_from_pure(
         color = "green" if not no_color else "black"
         secho(f"record.id: {record.id}", fg=color)
     except RuntimeError as e:
+        import traceback
+
+        print(traceback.format_exc())
         msg = f"ERROR pure pure_id: {pure_id} with message: {e!r}"
         color = "red" if not no_color else "black"
         secho(msg, fg=color)

@@ -8,6 +8,13 @@
 Changes
 =======
 
+Version v1.2.0 (release 2025-01-24)
+
+- model: add size to get more records
+- chore: update ruff configuration
+- api: add methods to get publisher and journal
+
+
 Version v1.1.0 (release 2025-01-09)
 
 - fix: permission
