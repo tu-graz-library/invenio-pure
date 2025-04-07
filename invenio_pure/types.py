@@ -7,6 +7,9 @@
 
 """Types of the pure connector."""
 
+from typing import SupportsIndex
+
+type JSON = dict[SupportsIndex, JSON] | list[JSON] | int | str | float | bool | None
 
 PureID = str
 """This describes the main id used in pure.
@@ -41,5 +44,5 @@ The address does not have to have a special format, but it has to be an email.
 PureAPIKey = str
 """Pure api token."""
 
-Filter = dict[str, list[str]]
+Filter = dict[str, list[str] | int]
 """The filter describes which records will be imported into the repository."""

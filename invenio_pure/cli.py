@@ -10,7 +10,7 @@
 
 from collections.abc import Callable
 from functools import wraps
-from typing import TypedDict, Unpack
+from typing import Concatenate
 
 from click import STRING, group, option, secho
 from click_params import URL
@@ -24,28 +24,20 @@ from invenio_accounts import current_accounts
 from .services import PureRESTService, build_service
 
 
-class KwargsDict(TypedDict, total=False):
-    """Kwargs dict."""
-
-    pure_service: PureRESTService
-    user_email: str
-    pure_id: str
-    no_color: bool
-    identity: Identity
-
-
-def build_identity[T](func: Callable[..., T]) -> Callable:
+def build_identity[**P, T](
+    func: Callable[P, T],
+) -> Callable[Concatenate[Identity, P], T]:
     """Decorate to build the user."""
 
     @wraps(func)
-    def build(*_: dict, **kwargs: Unpack[KwargsDict]) -> T:
+    def build(*args: P.args, **kwargs: P.kwargs) -> T:
         user = current_accounts.datastore.get_user_by_email(kwargs["user_email"])
         identity = get_identity(user)
         identity.provides.add(any_user)
         kwargs["identity"] = identity
         del kwargs["user_email"]
 
-        return func(**kwargs)
+        return func(*args, **kwargs)
 
     return build
 
@@ -79,9 +71,6 @@ def import_records_from_pure(
         color = "green" if not no_color else "black"
         secho(f"record.id: {record.id}", fg=color)
     except RuntimeError as e:
-        import traceback
-
-        print(traceback.format_exc())
         msg = f"ERROR pure pure_id: {pure_id} with message: {e!r}"
         color = "red" if not no_color else "black"
         secho(msg, fg=color)

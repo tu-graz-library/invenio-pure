@@ -10,35 +10,25 @@
 
 from collections.abc import Callable
 from functools import wraps
-from typing import TypedDict, Unpack
+from typing import Concatenate
 
 from .config import PureRESTServiceConfig
 from .services import PureRESTService
 
 
-class KwargsDict(TypedDict, total=False):
-    """Kwargs dict."""
-
-    endpoint: str
-    token: str
-    user_email: str
-    pure_id: str
-    no_color: bool
-    pure_service: PureRESTService  # not nice, try to remove that from here, mypy
-
-
-def build_service[T](func: Callable[..., T]) -> Callable:
+def build_service[**P, T](
+    func: Callable[Concatenate[PureRESTService, P], T],
+) -> Callable[P, T]:
     """Decorate to build the services."""
 
     @wraps(func)
-    def build(*_: dict, **kwargs: Unpack[KwargsDict]) -> T:
-        endpoint = kwargs.pop("endpoint")
-        token = kwargs.pop("token")
+    def build(*args: P.args, **kwargs: P.kwargs) -> T:
+        endpoint = str(kwargs.pop("endpoint"))
+        token = str(kwargs.pop("token"))
 
         config = PureRESTServiceConfig(endpoint, token)
+        pure_service = PureRESTService(config=config)
 
-        kwargs["pure_service"] = PureRESTService(config=config)
-
-        return func(**kwargs)
+        return func(pure_service, *args, **kwargs)
 
     return build
