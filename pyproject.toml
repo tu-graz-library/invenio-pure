@@ -18,6 +18,7 @@ ignore = [
   "RUF022",
   "S101",
   "SIM117",
+  "TC006",
   "TD",
   "TID252",
   "TRY400",
@@ -30,3 +31,5 @@ exclude = [
   "docs",
 ]
 ignore_missing_imports = true
+disallow_untyped_decorators = false
+strict = true

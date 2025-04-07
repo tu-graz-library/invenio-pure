@@ -15,7 +15,7 @@ from typing import cast
 from requests import ReadTimeout, get, post, put
 from requests.exceptions import JSONDecodeError
 
-from ..types import URL, Filter, PureAPIKey, PureID
+from ..types import JSON, URL, Filter, PureAPIKey, PureID
 from .config import PureRESTConfig
 
 
@@ -51,7 +51,7 @@ class PureConnection:
         self.config = config
         self.post_json = PureRESTPOSTJson(self.config.token)
 
-    def get(self, endpoint: str, headers: dict[str, str]) -> dict:
+    def get(self, endpoint: str, headers: dict[str, str]) -> JSON:
         """Get."""
         try:
             response = get(endpoint, headers=headers, timeout=10)
@@ -61,9 +61,9 @@ class PureConnection:
         if str(response.status_code) != "200":
             raise PureRESTError(code=response.status_code, msg=str(response.text))
 
-        return cast(dict, response.json())
+        return cast(JSON, response.json())
 
-    def put(self, endpoint: str, data: dict, headers: dict[str, str]) -> dict:
+    def put(self, endpoint: str, data: JSON, headers: dict[str, str]) -> JSON:
         """Put."""
         try:
             response = put(endpoint, json=data, headers=headers, timeout=10)
@@ -73,9 +73,9 @@ class PureConnection:
         if str(response.status_code) != "200":
             raise PureRESTError(code=response.status_code, msg=str(response.text))
 
-        return cast(dict, response.json())
+        return cast(JSON, response.json())
 
-    def post(self, endpoint: str, data: dict, headers: dict[str, str]) -> dict:
+    def post(self, endpoint: str, data: JSON, headers: dict[str, str]) -> JSON:
         """Post."""
         try:
             response = post(endpoint, json=data, headers=headers, timeout=10)
@@ -85,9 +85,9 @@ class PureConnection:
         if str(response.status_code) != "200":
             raise PureRESTError(code=response.status_code, msg=str(response.text))
 
-        return cast(dict, response.json())
+        return cast(JSON, response.json())
 
-    def ids(self, filter_records: Filter) -> dict:
+    def ids(self, filter_records: Filter) -> list[dict[str, str]]:
         """Post ids."""
         endpoint = f"{self.config.endpoint}/research-outputs/search"
         body = filter_records
@@ -95,23 +95,24 @@ class PureConnection:
         body["offset"] = 0
         headers = self.post_json.create_request_headers()
 
-        return self.post(endpoint, body, headers)
+        response = cast(dict[str, JSON], self.post(endpoint, cast(JSON, body), headers))
+        return cast(list[dict[str, str]], response["items"])
 
-    def metadata(self, pure_id: PureID) -> dict:
+    def metadata(self, pure_id: PureID) -> dict[str, JSON]:
         """Post metadata."""
         endpoint = f"{self.config.endpoint}/research-outputs/{pure_id}"
         headers = self.post_json.create_request_headers()
 
-        return self.get(endpoint, headers)
+        return cast(dict[str, JSON], self.get(endpoint, headers))
 
-    def journal(self, journal_id: PureID) -> dict:
+    def journal(self, journal_id: PureID) -> JSON:
         """Get Journal."""
         endpoint = f"{self.config.endpoint}/journals/{journal_id}"
         headers = self.post_json.create_request_headers()
 
         return self.get(endpoint, headers)
 
-    def publisher(self, publisher_id: PureID) -> dict:
+    def publisher(self, publisher_id: PureID) -> JSON:
         """Get Publisher."""
         endpoint = f"{self.config.endpoint}/publishers/{publisher_id}"
         headers = self.post_json.create_request_headers()
@@ -131,7 +132,7 @@ class PureConnection:
         with get(file_url, stream=True, headers=headers, timeout=10) as response:
             copyfileobj(response.raw, file_pointer)
 
-    def mark_as_exported(self, pure_id: PureID, record: dict) -> bool:
+    def mark_as_exported(self, pure_id: PureID, record: JSON) -> bool:
         """Post mark as exported."""
         endpoint = f"{self.config.endpoint}/research-outputs/{pure_id}"
         body = record

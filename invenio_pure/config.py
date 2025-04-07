@@ -5,13 +5,9 @@
 # invenio-pure is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Invenio module that adds pure."""
+"""Invenio module that adds pure.
 
-
-from .types import URL, EmailAddress, PureToken
-
-PURE_CELERY_BEAT_SCHEDULE: dict[str, dict] = {}
-"""The celery beat schedule is used to configure the import schedule.
+The celery beat schedule is used to configure the import schedule.
 
 Following is a example configuration. One option to add this to the
 global celery beat schedule is to update the CELERY_BEAT_SCHEDULE
@@ -24,6 +20,9 @@ dict in invenio.cfg by the example below:
         "schedule": crontab(hour=1, minute=0, day_of_week=0),
     }
 """
+
+
+from .types import URL, EmailAddress, PureToken
 
 PURE_PURE_ENDPOINT: URL = ""
 """This is the endpoint of the pure instance."""

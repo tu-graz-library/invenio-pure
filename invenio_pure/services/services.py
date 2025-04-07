@@ -11,7 +11,7 @@
 from flask_principal import Identity
 
 from ..records import PureAPI
-from ..types import Filter, PureID
+from ..types import JSON, Filter, PureID
 from .config import PureRESTServiceConfig
 
 
@@ -32,7 +32,7 @@ class PureRESTService:
         """Fetch all ids from pure by given filter."""
         return self.api.fetch_all_ids(filter_records)
 
-    def get_metadata(self, _: Identity, pure_id: PureID) -> dict:
+    def get_metadata(self, _: Identity, pure_id: PureID) -> dict[str, JSON]:
         """Get metadata by pure uuid."""
         return self.api.get_metadata(pure_id)
 
