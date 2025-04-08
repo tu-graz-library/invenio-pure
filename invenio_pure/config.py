@@ -24,10 +24,10 @@ dict in invenio.cfg by the example below:
 
 from .types import URL, EmailAddress, PureToken
 
-PURE_PURE_ENDPOINT: URL = ""
+PURE_ENDPOINT: URL = ""
 """This is the endpoint of the pure instance."""
 
-PURE_PURE_TOKEN: PureToken = ""
+PURE_TOKEN: PureToken = ""
 """This is the token to be allowed to use the API."""
 
 PURE_USER_EMAIL: EmailAddress = ""
