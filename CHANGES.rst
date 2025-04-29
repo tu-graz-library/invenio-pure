@@ -8,6 +8,15 @@
 Changes
 =======
 
+Version v1.3.0 (release 2025-04-29)
+
+- setup: add python3.13 support
+- tasks: add logger messages
+- fix: config variable naming
+- jobs: add jobs
+- wip: type hints improvements
+
+
 Version v1.2.0 (release 2025-01-24)
 
 - model: add size to get more records
