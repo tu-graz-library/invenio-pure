@@ -20,3 +20,11 @@ class PureImportJob(JobType):
     description = "Import record from pure"
 
     task = import_records_from_pure
+
+
+class PureMarkAsExported(JobType):
+    """Pure mark as exported job."""
+
+    id = "pure_mark_as_exported_job"
+    title = "Mark as exported in Pure."
+    description = "Mark records in Pure with the tag mark-as-exported"
