@@ -33,3 +33,27 @@ def import_records_from_pure() -> None:
         except RuntimeError as e:
             msg = "ERROR pure pure_id: %s with message: %s"
             current_app.logger.error(msg, pure_id, str(e))
+
+
+@shared_task(ignore_result=True)
+def mark_as_exported_in_pure() -> None:
+    """Mark as exported in pure."""
+    current_app.logger.info("start marking records as exported in pure.")
+    mark_as_exported_func = current_app.config["PURE_MARK_AS_EXPORTED_FUNC"]
+    aggregator = current_app.config["PURE_MARK_AS_EXPORTED_AGGREGATOR"]
+
+    pure_service = current_pure.pure_rest_service
+
+    for entry in aggregator():
+        try:
+            mark_as_exported_func(
+                system_identity,
+                entry.pid,
+                entry.pure_id,
+                pure_service,
+            )
+            msg = "record %s has been marked in pure successfully."
+            current_app.logger.info(msg, entry.pid)
+        except (RuntimeError, RuntimeWarning) as error:
+            msg = "record couldn't be marked as exported in pure. (marc21_id: %s, pure_id: %s, error: %s)"
+            current_app.logger.error(msg, entry.pid, entry.pure_id, error)
