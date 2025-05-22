@@ -11,7 +11,7 @@ from .errors import PureAPIError, PureRuntimeError
 from .ext import InvenioPure
 from .types import URL, PureID
 
-__version__ = "1.3.0"
+__version__ = "1.4.0"
 
 __all__ = (
     "__version__",
