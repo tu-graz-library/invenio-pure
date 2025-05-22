@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version v1.4.0 (release 2025-05-22)
+
+- jobs: add job for marking in pure
+
+
 Version v1.3.0 (release 2025-04-29)
 
 - setup: add python3.13 support
