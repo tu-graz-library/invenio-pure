@@ -56,9 +56,6 @@ include = ["/invenio_pure"]
 profile = "black"
 
 [tool.mypy]
-exclude = [
-  "docs",
-]
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 strict = true
