@@ -52,3 +52,15 @@ def mark_as_exported_in_pure() -> None:
         except (RuntimeError, RuntimeWarning) as error:
             msg = "record couldn't be marked as exported in pure. (marc21_id: %s, pure_id: %s, error: %s)"
             current_app.logger.error(msg, entry.pid, entry.pure_id, error)
+
+
+@shared_task(ignore_result=True)
+def list_all_available_records() -> None:
+    """List all available records."""
+    filter_records = current_app.config["PURE_FILTER_RECORDS"]
+
+    pure_service = current_pure.pure_rest_service
+
+    for pure_id in pure_service.fetch_all_ids(system_identity, filter_records):
+        msg = "record %s is ready to be imported"
+        current_app.logger.info(msg, pure_id)

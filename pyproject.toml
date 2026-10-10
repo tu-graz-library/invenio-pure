@@ -10,10 +10,8 @@ license = "MIT"
 authors = [{ name = "Graz University of Technology." }]
 classifiers = ["Development Status :: 5 - Production/Stable"]
 dependencies = [
-  "click>=7.0.0",
-  "click-params>=0.4.0",
+  "flask-principal>=0.4.0",
   "invenio-access>=2.0.0",
-  "invenio-accounts>=3.0.0",
   "invenio-celery>=1.2.5",
   "invenio-jobs>=3.0.0",
   "requests>=2.0.0",
@@ -22,9 +20,6 @@ dynamic = ["version"]
 
 [project.urls]
 Repository = "https://github.com/tu-graz-library/invenio-pure"
-
-[project.entry-points."flask-commands"]
-pure = "invenio_pure.cli:pure"
 
 [project.entry-points."invenio_base.apps"]
 invenio_pure = "invenio_pure:InvenioPure"
@@ -35,14 +30,14 @@ invenio_pure = "invenio_pure.tasks"
 [project.entry-points."invenio_jobs.jobs"]
 pure_import = "invenio_pure.jobs:PureImportJob"
 pure_mark_as_exported = "invenio_pure.jobs:PureMarkAsExported"
+list_all_available_records = "invenio_pure.jobs:ListAllAvailableRecords"
 
 [project.optional-dependencies]
 tests = [
-  "pytest-black-ng>=0.4.0",
+  "pytest-black>=0.6.0",
   "pytest-invenio>=1.4.3",
   "invenio-search[opensearch2]>=2.1.0",
   "ruff>=0.5.4",
-  "Sphinx>=4.5",
 ]
 
 [build-system]

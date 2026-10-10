@@ -5,7 +5,11 @@
 
 from invenio_jobs.jobs import JobType
 
-from .tasks import import_records_from_pure
+from .tasks import (
+    import_records_from_pure,
+    list_all_available_records,
+    mark_as_exported_in_pure,
+)
 
 
 class PureImportJob(JobType):
@@ -24,3 +28,15 @@ class PureMarkAsExported(JobType):
     id = "pure_mark_as_exported_job"
     title = "Mark as exported in Pure."
     description = "Mark records in Pure with the tag mark-as-exported"
+
+    task = mark_as_exported_in_pure
+
+
+class ListAllAvailableRecords(JobType):
+    """List all available records."""
+
+    id = "list_all_available_records"
+    title = "List all available records."
+    description = "List all records which are ready imported."
+
+    task = list_all_available_records
