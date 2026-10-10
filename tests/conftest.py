@@ -1,17 +1,11 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2020-2022 Technische Universität Graz.
-# Copyright (C) 2025 Graz University of Technology.
-#
-# invenio-pure is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# SPDX-FileCopyrightText: 2020-2026 Graz University of Technology.
+# SPDX-License-Identifier: MIT
 
 """Pytest configuration.
 
 See https://pytest-invenio.readthedocs.io/ for documentation on which test
 fixtures are available.
 """
-
 
 from collections.abc import Callable
 
