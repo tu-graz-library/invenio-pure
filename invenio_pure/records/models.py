@@ -10,7 +10,7 @@ from typing import cast
 from requests import ReadTimeout, get, post, put
 from requests.exceptions import JSONDecodeError
 
-from ..types import JSON, URL, Filter, PureAPIKey, PureID
+from ..types import URL, Filter, JsonType, PureAPIKey, PureId, PureIds
 from .config import PureRESTConfig
 
 
@@ -46,7 +46,7 @@ class PureConnection:
         self.config = config
         self.post_json = PureRESTPOSTJson(self.config.token)
 
-    def get(self, endpoint: str, headers: dict[str, str]) -> JSON:
+    def get(self, endpoint: str, headers: dict[str, str]) -> JsonType:
         """Get."""
         try:
             response = get(endpoint, headers=headers, timeout=10)
@@ -56,9 +56,9 @@ class PureConnection:
         if str(response.status_code) != "200":
             raise PureRESTError(code=response.status_code, msg=str(response.text))
 
-        return cast(JSON, response.json())
+        return cast(JsonType, response.json())
 
-    def put(self, endpoint: str, data: JSON, headers: dict[str, str]) -> JSON:
+    def put(self, endpoint: str, data: JsonType, headers: dict[str, str]) -> JsonType:
         """Put."""
         try:
             response = put(endpoint, json=data, headers=headers, timeout=10)
@@ -68,9 +68,9 @@ class PureConnection:
         if str(response.status_code) != "200":
             raise PureRESTError(code=response.status_code, msg=str(response.text))
 
-        return cast(JSON, response.json())
+        return cast(JsonType, response.json())
 
-    def post(self, endpoint: str, data: JSON, headers: dict[str, str]) -> JSON:
+    def post(self, endpoint: str, data: JsonType, headers: dict[str, str]) -> JsonType:
         """Post."""
         try:
             response = post(endpoint, json=data, headers=headers, timeout=10)
@@ -80,9 +80,9 @@ class PureConnection:
         if str(response.status_code) != "200":
             raise PureRESTError(code=response.status_code, msg=str(response.text))
 
-        return cast(JSON, response.json())
+        return cast(JsonType, response.json())
 
-    def ids(self, filter_records: Filter) -> list[dict[str, str]]:
+    def ids(self, filter_records: Filter) -> PureIds:
         """Post ids."""
         endpoint = f"{self.config.endpoint}/research-outputs/search"
         body = filter_records
@@ -90,24 +90,25 @@ class PureConnection:
         body["offset"] = 0
         headers = self.post_json.create_request_headers()
 
-        response = cast(dict[str, JSON], self.post(endpoint, cast(JSON, body), headers))
-        return cast(list[dict[str, str]], response["items"])
+        response = self.post(endpoint, cast(JsonType, body), headers)
 
-    def metadata(self, pure_id: PureID) -> dict[str, JSON]:
+        return PureIds(cast(list[JsonType], response["items"]))
+
+    def metadata(self, pure_id: PureId) -> JsonType:
         """Post metadata."""
         endpoint = f"{self.config.endpoint}/research-outputs/{pure_id}"
         headers = self.post_json.create_request_headers()
 
-        return cast(dict[str, JSON], self.get(endpoint, headers))
+        return self.get(endpoint, headers)
 
-    def journal(self, journal_id: PureID) -> JSON:
+    def journal(self, journal_id: PureId) -> JsonType:
         """Get Journal."""
         endpoint = f"{self.config.endpoint}/journals/{journal_id}"
         headers = self.post_json.create_request_headers()
 
         return self.get(endpoint, headers)
 
-    def publisher(self, publisher_id: PureID) -> JSON:
+    def publisher(self, publisher_id: PureId) -> JsonType:
         """Get Publisher."""
         endpoint = f"{self.config.endpoint}/publishers/{publisher_id}"
         headers = self.post_json.create_request_headers()
@@ -127,7 +128,7 @@ class PureConnection:
         with get(file_url, stream=True, headers=headers, timeout=10) as response:
             copyfileobj(response.raw, file_pointer)
 
-    def mark_as_exported(self, pure_id: PureID, record: JSON) -> bool:
+    def mark_as_exported(self, pure_id: PureId, record: JsonType) -> bool:
         """Post mark as exported."""
         endpoint = f"{self.config.endpoint}/research-outputs/{pure_id}"
         body = record
