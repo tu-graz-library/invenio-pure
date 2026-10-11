@@ -5,9 +5,9 @@
 
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import SupportsIndex, cast
+from typing import cast
 
-from ..types import JSON, Filter, PureID
+from ..types import Filter, JsonType, PureFile, PureId, PureIds
 from .config import PureRESTConfig
 from .models import PureConnection
 
@@ -21,24 +21,23 @@ class PureAPI:
         """Construct."""
         self.connection = self.connection_cls(config)
 
-    def fetch_all_ids(self, filter_records: Filter) -> list[str]:
+    def fetch_all_ids(self, filter_records: Filter) -> PureIds:
         """Get records."""
-        records = self.connection.ids(filter_records)
-        return [record["uuid"] for record in records]
+        return self.connection.ids(filter_records)
 
-    def get_metadata(self, pure_id: PureID) -> dict[str, JSON]:
+    def get_metadata(self, pure_id: PureId) -> JsonType:
         """Get metadata."""
         return self.connection.metadata(pure_id)
 
-    def get_journal(self, journal_id: PureID) -> JSON:
+    def get_journal(self, journal_id: PureId) -> JsonType:
         """Get journal metadata."""
         return self.connection.journal(journal_id)
 
-    def get_publisher(self, publisher_id: PureID) -> JSON:
+    def get_publisher(self, publisher_id: PureId) -> JsonType:
         """Get publisher metadata."""
         return self.connection.publisher(publisher_id)
 
-    def get_publisher_name(self, pure_id: PureID) -> str:
+    def get_publisher_name(self, pure_id: PureId) -> str:
         """Get publisher name."""
         metadata = cast(
             dict[str, dict[str, dict[str, str]]],
@@ -46,7 +45,7 @@ class PureAPI:
         )
 
         try:
-            journal_id = metadata["journalAssociation"]["journal"]["uuid"]
+            journal_id = PureId(metadata["journalAssociation"]["journal"]["uuid"])
         except KeyError as error:
             msg = f"For pure_id: {pure_id} no journal was found."
             raise RuntimeError(msg) from error
@@ -54,7 +53,7 @@ class PureAPI:
         journal = cast(dict[str, dict[str, str]], self.get_journal(journal_id))
 
         try:
-            publisher_id = journal["publisher"]["uuid"]
+            publisher_id = PureId(journal["publisher"]["uuid"])
         except KeyError as error:
             msg = f"For pure_id: {pure_id} no publisher was found."
             raise RuntimeError(msg) from error
@@ -69,11 +68,10 @@ class PureAPI:
 
         return name
 
-    def download_file(self, file_: dict[str, str]) -> str:
+    def download_file(self, pure_file: PureFile) -> Path:
         """Download file."""
-        filename = file_["fileName"]
-        prefix = Path(filename).stem
-        suffix = Path(filename).suffix
+        prefix = pure_file.stem
+        suffix = pure_file.suffix
 
         with NamedTemporaryFile(
             delete=False,
@@ -81,16 +79,13 @@ class PureAPI:
             prefix=f"{prefix}-",
             suffix=suffix,
         ) as file_pointer:
-            self.connection.store_file_temporarily(file_["url"], file_pointer)
-        return file_pointer.name
+            self.connection.store_file_temporarily(pure_file.url, file_pointer)
+        return Path(file_pointer.name)
 
-    def mark_as_exported(self, pure_id: PureID, record: JSON) -> bool:
+    def mark_as_exported(self, pure_id: PureId, record: JsonType) -> bool:
         """Mark as exported."""
-        # TODO:
-        # replace dk/atira/pure/researchoutput/keywords/export2repo/validated with
-        # dk/atira/pure/researchoutput/keywords/export2repo/exported
-        # not sure if the attribute worksl like that
-        record[cast(SupportsIndex, "keywordUris")] = [
+        # this replaces dk/atira/pure/researchoutput/keywords/export2repo/validated
+        record["keywordUris"] = [
             "dk/atira/pure/researchoutput/keywords/export2repo/exported",
         ]
         return self.connection.mark_as_exported(pure_id, record)

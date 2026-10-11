@@ -5,15 +5,17 @@
 
 from .errors import PureAPIError, PureRuntimeError
 from .ext import InvenioPure
-from .types import URL, PureID
+from .types import URL, PureFile, PureId, PureIds
 
 __version__ = "1.4.0"
 
 __all__ = (
     "__version__",
     "InvenioPure",
-    "PureID",
+    "PureId",
+    "PureIds",
     "PureAPIError",
+    "PureFile",
     "PureRuntimeError",
     "URL",
 )

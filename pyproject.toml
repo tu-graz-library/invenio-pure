@@ -4,7 +4,7 @@
 [project]
 name = "invenio-pure"
 description = "Provides API for PURE."
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.14"
 license = "MIT"
 authors = [{ name = "Graz University of Technology." }]
@@ -56,13 +56,20 @@ exclude = [
 [tool.hatch.build.targets.sdist]
 include = ["/invenio_pure"]
 
+[tool.hatch.version]
+path = "invenio_pure/__init__.py"
+
 [tool.isort]
 profile = "black"
 
 [tool.mypy]
-ignore_missing_imports = true
-disallow_untyped_decorators = false
+extra_checks = true
 strict = true
+strict_bytes = true
+strict_equality = true
+follow_untyped_imports = true
+disallow_any_generics = false
+python_executable = ".venv/bin/python"
 
 [tool.pytest.ini_options]
 addopts = "--black --isort --cov=invenio_pure --cov-report=term-missing"
