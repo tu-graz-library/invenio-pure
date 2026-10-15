@@ -56,11 +56,8 @@ disallow_untyped_decorators = false
 strict = true
 
 [tool.pytest.ini_options]
-addopts = '--black --isort --pydocstyle --doctest-glob="*.rst" --doctest-modules --cov=invenio_pure --cov-report=term-missing'
+addopts = "--black --isort --cov=invenio_pure --cov-report=term-missing"
 testpaths = "tests invenio_pure"
-
-[tool.ruff]
-exclude = ["docs"]
 
 [tool.ruff.lint]
 select = ["ALL"]

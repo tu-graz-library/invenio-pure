@@ -1,16 +1,15 @@
-..
-    SPDX-FileCopyrightText: 2020-2026 Graz University of Technology.
-    SPDX-License-Identifier: MIT
+<!--
+SPDX-FileCopyrightText: 2020-2026 Graz University of Technology.
+SPDX-License-Identifier: MIT
+-->
 
-Changes
-=======
+# Changes
 
-Version v1.4.0 (release 2025-05-22)
+# Version v1.4.0 (release 2025-05-22)
 
 - jobs: add job for marking in pure
 
-
-Version v1.3.0 (release 2025-04-29)
+# Version v1.3.0 (release 2025-04-29)
 
 - setup: add python3.13 support
 - tasks: add logger messages
@@ -18,20 +17,17 @@ Version v1.3.0 (release 2025-04-29)
 - jobs: add jobs
 - wip: type hints improvements
 
-
-Version v1.2.0 (release 2025-01-24)
+# Version v1.2.0 (release 2025-01-24)
 
 - model: add size to get more records
 - chore: update ruff configuration
 - api: add methods to get publisher and journal
 
-
-Version v1.1.0 (release 2025-01-09)
+# Version v1.1.0 (release 2025-01-09)
 
 - fix: permission
 
-
-Version v1.0.0 (release 2025-01-07)
+# Version v1.0.0 (release 2025-01-07)
 
 - setup: update ruff configuration
 - global: remove username and password usage
@@ -41,22 +37,17 @@ Version v1.0.0 (release 2025-01-07)
 - global: refactore to service approach
 - setup: migrate to ruff
 
-
-Version v0.1.2 (release 2023-01-16)
+# Version v0.1.2 (release 2023-01-16)
 
 - fix: missing exports
 
-
-Version v0.1.1 (release 2023-01-11)
+# Version v0.1.1 (release 2023-01-11)
 
 - setup: remove translation config
 
-
-Version v0.1.0 (release 2023-01-11)
-
+# Version v0.1.0 (release 2023-01-11)
 
 
-
-Version 0.1.0 (released TBD)
+# Version 0.1.0 (released TBD)
 
 - Initial public release.
