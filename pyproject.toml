@@ -44,6 +44,15 @@ tests = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.build]
+exclude = [
+  ".github/**",
+  "tests/**",
+  ".gitignore",
+  "eslint.config.js",
+  "run-tests.sh",
+]
+
 [tool.hatch.build.targets.sdist]
 include = ["/invenio_pure"]
 
