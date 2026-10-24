@@ -5,6 +5,17 @@ SPDX-License-Identifier: MIT
 
 # Changes
 
+## Version v1.5.0 (released 2026-10-24)
+
+- chore(types): improve types
+- chore(setup): improve build
+- chore(docs): mv to Markdown files
+- refactor(jobs): move cli to jobs only
+- chore: change to SPDX license
+- chore: remove old and wrong information
+- chore: remove docs
+- chore: move to hatchling
+
 # Version v1.4.0 (release 2025-05-22)
 
 - jobs: add job for marking in pure
