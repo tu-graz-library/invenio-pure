@@ -7,7 +7,7 @@ from .errors import PureAPIError, PureRuntimeError
 from .ext import InvenioPure
 from .types import URL, PureFile, PureId, PureIds
 
-__version__ = "1.4.0"
+__version__ = "1.5.0"
 
 __all__ = (
     "__version__",
